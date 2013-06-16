@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="../../assets/book.css"/>
+        <script src="../../../assets/jquery-1.9.1.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <a href="../../" name="head"><img src="../../assets/header.png" alt="LumberMill&apos;s Notes" /></a>
+            <div id="title">
+                <span></span>
+            </div>
+            <nav>
+                <button onclick="goto_bookshelf()">&and; 本棚</button>
+                <button id="toggle_index" onclick="toggle_index()">&or; 目次</button>
+                <div id='index'></div>
+            </nav>
+        </header>
+        <aside>
+            <img id="aside_icon" src="book_icon.png" />
+            <h3 id="aside_title"></h3>
+            <p id="aside_info"></p>
+            <h3 style='clear: both;'>前提条件</h3> 
+            <p id="aside_pre"></p>
+            <h3>参考文献</h3>
+            <p id="aside_ref"></p>
+        </aside>
+        <nav class="paginator"></nav>
+        <section>
+	    <article style='text-align: center'>
+                <img src='book_cover.png' style='width: 600px'/>
+                <button id="start">本を開く（最初の章へ）</button>
+	    </article>
+        </section>
+        <nav class="paginator"></nav>
+        <footer>
+            <a href="../../../"><img src="../../assets/footer.png" alt="LumberMill, Inc." /></a>
+        </footer>
+        <script>
+            function goto_(_href){
+                var href = _href;
+                return function(){
+                    location.href = "?page="+_href;
+                };
+            }
+            
+            function make_li(href,text,closefunc){
+                var li = document.createElement("li");
+                if(href == null){
+                    li.textContent = text;
+                    li.id = "index_current";
+                }else{
+                    var a = document.createElement("a");
+                    li.appendChild(a);
+                    a.textContent = text;
+                    a.href = "?page="+href;
+                    if(closefunc == true)
+                        a.onclick = toggle_index;
+                }
+                return li;
+            }
+            
+            // 目次作成
+            // プルダウン用: cur=現在のページ
+            // カバーページ用: cur=null
+            // 各ページ（チャプター）トップ用 cur=現在のページ,curonly=true
+            function make_index(data,cur,curonly){
+                var ul1 = document.createElement("ul");
+                for(var i = 0; i < data.chapters.length; i++){
+                    var chapter = data.chapters[i];
+                    var ul2 = document.createElement("ul");
+                    for(var j=0; j < chapter.sections.length; j++){
+                        var level = chapter.sections[j][0]; // 2 to 6
+                        var section = chapter.sections[j][1];
+                        var closefunc = curonly != true && cur != null; // プルダウン用のみ
+                        var li = make_li(chapter.name+"#"+j,section,closefunc);
+                        li.className = "h"+level;
+                        ul2.appendChild(li);
+                    }
+                    var href = chapter.name == cur ? null : chapter.name;
+                    if(href == null && curonly == true){
+                        // このチャプターの目次のみ返す
+                        return ul2;
+                    }
+                    var li = make_li(href,chapter.title);
+                    li.appendChild(ul2);
+                    ul1.appendChild(li);
+                }
+                return ul1;
+            }
+
+            var page; // load_page内で使用
+
+            function name_to_h(){
+                $("h2,h3,h4,h5,h6").each(function(i,e){
+                    var a = document.createElement("a");
+                    a.name = i - 3;
+                    a.textContent = this.textContent;
+                    $(this).html(a);
+                });
+                var tmp = location.hash;
+                location.hash = "";
+                location.hash = tmp;
+            }
+
+            function load_index(){
+                // 目次（本文ロード完了後）
+                $.get("_index.json",function(d){
+                    // タイトルを設定
+                    $("title").text(d.title);
+                    $("#title span").text(d.title);
+                    $("#index").append("<a href='index.html'>"+d.title+" (表紙)</a>");
+                    $("#index").append("<a href='javascript:void(0)' onclick='toggle_index()'"
+                       + " id='index_close'><img src='../../../assets/icons/cross.png'/></a>");
+                    $("#index").append(make_index(d,page));
+                       // サイドバー
+                    $("#aside_title").text(d.title);
+                    $("#aside_info").append("ステータス: "+d.status+"<br/>");
+                    $("#aside_info").append("サイズ: "+d.size+"<br/>");
+                    $("#aside_info").append("最終更新: "+d.modified_on);
+                    if(d.preconditions){
+                    d.preconditions.forEach(function(e){
+                        $("#aside_pre").append(e+"<br/>");
+                    });
+                    }
+                    if(d.references){
+                    d.references.forEach(function(e){
+                        $("#aside_ref").append(e+"<br/>");
+                    });
+                    }
+                    // 章内の見出し 
+                    $("h1").after(make_index(d,page,true));
+                    // 各見出しにname属性を付ける
+                    name_to_h();
+                    
+                    var current = -1;
+                    for(var i = 0; i < d.chapters.length; i++){
+                        if(d.chapters[i].name == page){
+                            current = i;
+                            break;
+                        }
+                    }
+
+                    // 表紙にいる場合はここまで
+		    if(current == -1){
+                         var p = d.chapters[0].name;
+                         var b = $("button#start");
+                         if(b.length == 0){
+                             alert("Unknown page: "+page);
+                         }else{
+                             b.click(goto_(p));
+                         }
+			 return;
+		    }
+
+                    // var b_prev = "<img src='../../../assets/icons/book_previous.png'/>";
+                    // var b_next = "<img src='../../../assets/icons/book_next.png'/>";
+                    var b_prev = "&laquo;　";
+                    var b_next = "　&raquo;";
+
+                    $("nav.paginator").html("<button class='paginator_prev'>"+b_prev+"</button>"
+			+ " <!-- "+current+" --> "
+			+ "<button class='paginator_next'>"+b_next+"</button>");
+                    //                    if(){
+                    //                        // 目次に無い
+                    //                        $("button.paginator_prev").attr("disabled","disabled");
+                    //                        $("button.paginator_next").attr("disabled","disabled");
+                    if(current == 0){
+                        // 最初の章
+                        $("button.paginator_prev").attr("disabled","disabled");
+                        var next = d.chapters[current + 1];
+                        $("button.paginator_next").click(goto_(next.name)).html(next.title+b_next);
+                    }else if(current == d.chapters.length - 1){
+                        // 最後の章
+                        $("button.paginator_next").attr("disabled","disabled");
+                        var prev = d.chapters[current - 1];
+                        $("button.paginator_prev").click(goto_(prev.name)).html(b_prev+prev.title);
+                    }else{
+                        // その他中間ページ
+                        var prev = d.chapters[current - 1];
+                        $("button.paginator_prev").click(goto_(prev.name)).html(b_prev+prev.title);
+                        var next = d.chapters[current + 1];
+                        $("button.paginator_next").click(goto_(next.name)).html(next.title+b_next);
+                    }
+                });
+            }      
+      
+            // Ajaxのエラーハンドラ登録
+            $(document).ajaxError(function(event, request, settings) {
+                $("section").css("color","red");
+                $("section").append("Error requesting page '" + settings.url + "'.<br/>");
+            });
+            
+            // タイトル、目次
+            $("#index").hide();
+
+            page = location.search.match(/page=(.+)&?/);
+            if(page){
+                // 本文
+                page = page[1]
+                $("section").load(page,load_index);
+            }else{
+                load_index();
+            }
+
+            // 本棚ページへ
+            function goto_bookshelf(){
+                location.href = "../book_index.php";
+            }
+            
+            // 目次の表示切替
+            function toggle_index(){
+                $("#index").slideToggle('fast');
+            }            
+        </script>
+    </body>
+</html>

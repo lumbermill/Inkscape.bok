@@ -1,0 +1,11 @@
+{
+    "status":"draft",
+    "title":"Inkscape",
+    "author":"",
+    "chapters": ["00_install.html","01_button.html","02_flower.html","03_picture.html",
+		"04_pens.html"],
+    "references": ["","",""],
+    "created_on": "2013-06-15",
+    "modified_on": "2013-06-15",
+    "memo":"draft - preview - published"
+}
