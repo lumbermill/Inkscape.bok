@@ -1,0 +1,100 @@
+<h1>inkscapeを使ってみよう！</h1>
+<article>
+    <h2>五角形の宝石を描く(後編）</h2>
+    <p>ここでは五角形ツールとクローンの回転で、立体感のある宝石を描いてみましょう。</p>
+
+　　<figure>
+      <img src="07_24.png" alt=""/>
+      <figcaption>五角形の宝石</figcaption>
+   </figure>
+    
+　　　<p>ここでは宝石の表面、カット面を制作します。先ほどクローンしていたもうひとつの五角形に、下図の様にもう一つ小さめの五角形を描きます。</p>
+    　<figure>
+      <img src="07_01.png" alt=""/>
+    　</figure>
+    <p>さらに最初の五角形と小さい五角形との間にカット面となる台形をベジェ曲線で手描きします。</p>
+    　<figure>
+      <img src="07_02.png" alt=""/>
+    　</figure>
+　　 <p>手描きした台形を五画の面に沿って複製したいので、まず台形を選択したままもう一度台形をクリックし、台形の回転軸を最初に描いた五角形の中心にくるよう移動させます。後で微調整するのでここではおおよその中心で大丈夫です。</p>　
+　　　<figure>
+      <img src="07_04.png" alt=""/>
+    　</figure>
+     <p>台形を選択したまま、「Edit」の「Clone」→「Create Tiled Clones…」（タイルクローンを作成…）をクリックします。表れた「Create Tile Clone」ボックスの[Symmetry]の[Rows,columns]（行、列）のcolumns（右側）の値を「５」にします。</p>
+     <figure>
+      <img src="07_06.png" alt=""/>
+    　</figure>
+     <p>[Shift]の[Exclude tile]（タイルを考慮しない）の右側にチェックを入れます。</p>
+     <figure>
+     <img src="07_07.png" alt=""/>
+     </figure>
+    <p>[Rotation]（回転）の[Per column]の値を360°÷５＝「72°」に設定</p>　
+　　　<figure>
+      <img src="07_08.png" alt=""/>
+    　</figure>
+     <p>下図の様になったら成功です。</p>
+     <figure>
+      <img src="07_09.png" alt=""/>
+    　</figure>
+     <p>最初に作成した台形のオブジェクトはこの状態では２つ重なっているので、１つ「delete」キーで消しておきます。</p>
+     <figure>
+      <img src="07_10.png" alt=""/>
+    　</figure>
+     <p>この状態では最初のオブジェクトとcloneで作ったオブジェクトがリンクした状態なので、最初のオブジェクトの色を変えれば、すべてのオブジェクトの色が変わります。ここでは最初のオブジェクトを選択して線を消し、塗りをグラデーションにします。</p>
+      <figure>
+      <img src="07_11.png" alt=""/>
+    　</figure>
+     <p>続いて「Edit」（編集）→「Clone」（クローン）→「Unlink Clone」（クローンのリンクを解除）（Shift+Alt+D)を選択し、クローンのリンクを外します。</p>
+     <figure>
+      <img src="07_12.png" alt=""/>
+    　</figure>
+     <p>リンクが外れたのでここで大きさのズレや、グラデーションをひとつずつ調整します。</p>
+     <figure>
+      <img src="07_13.png" alt=""/>
+    　</figure>
+     <p>中の小さな五角形の塗りもグラデーションにし、右上から光が差し込んでいる様にグラデーションをかけます。</p>
+     <figure>
+      <img src="07_15.png" alt=""/>
+    　</figure>
+     <p>ここで最初のベースとなった五角形が不要になるのでこれまで作成したオブジェクトを選択し、位置をずらして下の五角形Deleteで削除します。</p>
+     <figure>
+      <img src="07_16.png" alt=""/>
+    　</figure>
+　　　<p>先ほど動かしたオブジェクトをドラッグで囲み全て選択し、前編で制作した奥のカット面のオブジェクトとずれがない様に重ね合わせます。</p>
+     <figure>
+      <img src="07_17.png" alt=""/>
+    　</figure>
+　　　<p>最後に表面の光沢を描き込みます。ペンツールで下図の様な台形を描きます。</p>
+     <figure>
+      <img src="07_18.png" alt=""/>
+    　</figure>
+　　　<p>塗りを白にして線を消し、グラデーションをかけます。</p>
+     <figure>
+      <img src="07_19.png" alt=""/>
+    　</figure>
+     <p>右上から光が差し込んでいるように短形ツールでグラデーションを調節します。</p>
+     <figure>
+      <img src="07_20.png" alt=""/>
+    　</figure>
+     <p>これで五角形の宝石の出来上がりです。</p>
+     <figure>
+      <img src="07_24.png" alt=""/>
+    　</figure>
+     <p>その他にもクローンの回転を用いてこのような応用ができます。</p>
+     <figure>
+      <img src="07_25.png" alt=""/>
+    　</figure>
+
+    
+
+</article>
+<article>
+    <h2></h2>
+    <p></p>
+</article>
+<!--
+  Most used elements: p, pre > code.block, figure > img + figcaption
+  Generated at: 2013-05-30 11:26
+-->
+
+
